@@ -83,23 +83,23 @@
 			role="button"
 			tabindex="0"
 			on:click={viewForecast}
-			class="cursor-pointer max-w-4xl mx-auto bg-gradient-to-r from-blue-500 to-blue-300 rounded-xl shadow-lg overflow-hidden p-5 text-white focus:outline-none"
+			class="cursor-pointer max-w-4xl mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg overflow-hidden p-5 text-white focus:outline-none"
 		>
 			<div class="flex justify-between items-center mb-4">
 				<h1 class="text-3xl font-bold">{$weatherData.name}</h1>
 				<span>{formatDate(new Date())}</span>
 			</div>
-			<h2 class="text-2xl mb-2">Temperature: {$weatherData.main.temp} °C</h2>
+			<h2 class="text-xl mb-6">Temperature: {$weatherData.main.temp} °C</h2>
 			<div class="grid grid-cols-3 gap-4">
-				<div class="bg-blue-700 bg-opacity-50 rounded-lg p-3">
+				<div class="bg-blue-900 bg-opacity-50 rounded-lg p-3">
 					<h3 class="font-semibold">Conditions</h3>
 					<p>{$weatherData.weather[0].description}</p>
 				</div>
-				<div class="bg-blue-700 bg-opacity-50 rounded-lg p-3">
+				<div class="bg-blue-900 bg-opacity-50 rounded-lg p-3">
 					<h3 class="font-semibold">Humidity</h3>
 					<p>{$weatherData.main.humidity}%</p>
 				</div>
-				<div class="bg-blue-700 bg-opacity-50 rounded-lg p-3">
+				<div class="bg-blue-900 bg-opacity-50 rounded-lg p-3">
 					<h3 class="font-semibold">Wind Speed</h3>
 					<p>{$weatherData.wind.speed} km/h</p>
 				</div>
