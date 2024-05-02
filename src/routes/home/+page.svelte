@@ -1,9 +1,10 @@
 <!-- src/routes/index.svelte -->
 <script lang="ts">
 	import Search from '$lib/Search.svelte';
-	import { getWeather } from '$lib/api';
+	import { getCurrentWeather, getWeather } from '$lib/api';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	interface SearchEventDetail {
 		searchTerm: string;
@@ -26,6 +27,22 @@
 	let weatherData = writable<WeatherData | null>(null);
 	let error = writable('');
 
+	onMount(async () => {
+		try {
+			const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+            });
+            const { latitude, longitude } = position.coords;
+			const data = await getCurrentWeather(latitude, longitude);
+            weatherData.set(data);
+		} catch (e) {
+			console.error("Failed to get user's location or fetch weather data:", e);
+			if(e instanceof Error){
+				error.set(e.message);
+			}
+		}
+	});
+
 	async function handleSearch(event: CustomEvent<SearchEventDetail>) {
 		try {
 			const data = await getWeather(event.detail.searchTerm);
@@ -40,11 +57,14 @@
 			weatherData.set(null);
 		}
 	}
-    function viewForecast() {
-    goto(`/forecast/${encodeURIComponent($weatherData.name)}`);
-}
 
-	const formatDate = (date) => {
+	function viewForecast() {
+		if ($weatherData) {
+			goto(`/forecast/${encodeURIComponent($weatherData.name)}`);
+		}
+	}
+
+	const formatDate = (date: Date) => {
 		return new Date(date).toLocaleDateString(undefined, {
 			weekday: 'long',
 			year: 'numeric',

@@ -3,8 +3,6 @@
 	import { getWeatherForecast } from '$lib/api';
 	import { page } from '$app/stores';
 
-	// Simulated API response (you would fetch this data in a real scenario)
-
 	interface WeatherCondition {
 		main: string;
 		description: string;
@@ -30,7 +28,6 @@
 		conditions: string;
 	}
 
-
 	let forecastData = null;
 	let error = '';
 	let dailySummaries: DailySummary[] = [];
@@ -41,7 +38,9 @@
 			forecastData = await getWeatherForecast(location);
 			dailySummaries = processForecastData(forecastData.list);
 		} catch (e) {
-			error = e.message || 'An unexpected error occurred';
+			if (e instanceof Error) {
+				error = e.message || 'An unexpected error occurred';
+			}
 		}
 	});
 
@@ -75,8 +74,12 @@
 {#if dailySummaries.length > 0}
 	<div class="max-w-4xl mx-auto mt-8">
 		<h1 class="text-3xl font-bold text-center text-blue-800 mb-6">5-Day Weather Forecast</h1>
-		{#each dailySummaries as day}
-			<div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+		{#each dailySummaries as day, index}
+			<div
+				class="bg-white rounded-lg shadow-lg p-6 mb-4 {index % 2 === 0
+					? 'bg-blue-50'
+					: 'bg-blue-100'}"
+			>
 				<h2 class="text-xl font-semibold text-gray-800">{day.date}</h2>
 				<p class="text-gray-600">Min Temp: {day.temp_min} K</p>
 				<p class="text-gray-600">Max Temp: {day.temp_max} K</p>
